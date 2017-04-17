@@ -24,6 +24,10 @@
 
         vm.mesas = [];
         vm.mesa = {};
+        vm.formasMesas = [];
+        vm.formaMesa = {};
+        vm.tamanioMesas = [];
+        vm.tamanioMesa = {};
         vm.detailsOpen = false;
 
         vm.save = save;
@@ -31,25 +35,33 @@
         vm.setData = setData;
         vm.loadMesas = loadMesas;
         vm.remove = remove;
+        vm.mesaToUpdate = mesaToUpdate;
 
-        var element1 = angular.element(document.getElementById('nombre'));
-        var element2 = angular.element(document.getElementById('direccion'));
-        var element3 = angular.element(document.getElementById('telefono'));
+        var element1 = angular.element(document.getElementById('numero'));
 
         element1[0].addEventListener('focus', function () {
             element1[0].classList.remove('error-input');
             element1[0].removeEventListener('focus', removeFocus);
         });
 
-        element2[0].addEventListener('focus', function () {
-            element2[0].classList.remove('error-input');
-            element2[0].removeEventListener('focus', removeFocus);
-        });
 
-        element3[0].addEventListener('focus', function () {
-            element3[0].classList.remove('error-input');
-            element3[0].removeEventListener('focus', removeFocus);
-        });
+        vm.formasMesas = [
+            {forma_id: 1, forma: 'Redonda'},
+            {forma_id: 2, forma: 'Cuadrada'},
+            {forma_id: 3, forma: 'Rectangular'}
+        ];
+
+        vm.tamanioMesas = [
+            {id: 1, cantidad: 2},
+            {id: 2, cantidad: 4},
+            {id: 3, cantidad: 6},
+            {id: 4, cantidad: 8},
+            {id: 5, cantidad: 10},
+            {id: 6, cantidad: 12}
+        ];
+
+        vm.formaMesa = vm.formasMesas[0];
+        vm.tamanioMesa = vm.tamanioMesas[0];
 
         function removeFocus() { }
 
@@ -58,36 +70,47 @@
 
         function loadMesas() {
             MesasService.get().then(function (data) {
+                //console.log(data);
                 setData(data);
             });
         }
 
+        function mesaToUpdate(mesa) {
+            console.log(mesa);
+            console.log(vm.formaMesa);
+
+            vm.mesa = mesa;
+            vm.tamanioMesa.cantidad = mesa.cantidad;
+            vm.formaMesa.forma_id = mesa.forma_id;
+            console.log(vm.formaMesa);
+        }
+
         function save() {
 
-            if(vm.sucursal.nombre === undefined || vm.sucursal.nombre.length === 0) {
+            if(vm.mesa.mesa === undefined || vm.mesa.mesa.length === 0) {
                 element1[0].classList.add('error-input');
-                MvUtils.showMessage('error', 'El nombre no puede ser vacio');
+                MvUtils.showMessage('error', 'El número no puede ser vacio');
                 return;
             }
 
-            if(vm.sucursal.direccion === undefined || vm.sucursal.direccion.length === 0) {
-                element2[0].classList.add('error-input');
-                MvUtils.showMessage('error', 'La dirección no puede ser vacio');
-                return;
-            }
+            vm.mesa.mesa_id = vm.mesa.mesa;
+            vm.mesa.salon_id = 1;
+            vm.mesa.cantidad = vm.tamanioMesa.cantidad;
+            vm.mesa.forma_id = vm.formaMesa.forma_id;
+            vm.mesa.status = 0;
 
-            MesasService.save(vm.mesa).then(function (data) {
+            console.log(vm.mesa);
+
+            MesasService.create(vm.mesa).then(function (data) {
                 vm.detailsOpen = (data === undefined || data < 0) ? true : false;
                 if(data === undefined) {
                     element1[0].classList.add('error-input');
-                    element2[0].classList.add('error-input');
                     MvUtils.showMessage('error', 'Error actualizando el dato');
                 }
                 else {
                     vm.mesa = {};
                     loadMesas();
                     element1[0].classList.remove('error-input');
-                    element2[0].classList.remove('error-input');
                     MvUtils.showMessage('success', 'La operación se realizó satisfactoriamente');
                 }
             }).catch(function (data) {

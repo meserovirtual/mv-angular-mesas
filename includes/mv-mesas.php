@@ -40,7 +40,7 @@ class Mesas extends Main
     {
         $db = self::$instance->db;
 
-        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma, status, mesa FROM mesas ORDER BY mesa_id');
+        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma_id, status, mesa FROM mesas ORDER BY mesa_id');
 
         echo json_encode($results);
     }
@@ -70,11 +70,12 @@ class Mesas extends Main
         $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
 
         $data = array(
+            //'mesa_id' => $mesa_decoded->mesa_id,
             'salon_id' => $mesa_decoded->salon_id,
             'comanda_id' => $mesa_decoded->comanda_id,
             'usuario_id' => $mesa_decoded->usuario_id,
             'cantidad' => $mesa_decoded->cantidad,
-            'forma' => $mesa_decoded->forma,
+            'forma_id' => $mesa_decoded->forma_id,
             'status' => $mesa_decoded->status,
             'mesa' => $mesa_decoded->mesa
         );
@@ -121,7 +122,7 @@ class Mesas extends Main
             'comanda_id' => $mesa_decoded->comanda_id,
             'usuario_id' => $mesa_decoded->usuario_id,
             'cantidad' => $mesa_decoded->cantidad,
-            'forma' => $mesa_decoded->forma,
+            'forma_id' => $mesa_decoded->forma_id,
             'status' => $mesa_decoded->status,
             'mesa' => $mesa_decoded->mesa
         );
@@ -165,11 +166,12 @@ class Mesas extends Main
      */
     function checkMesa($detalle)
     {
+        //$detalle->mesa_id = (!array_key_exists("mesa_id", $detalle)) ? -1 : $detalle->mesa_id;
         $detalle->salon_id = (!array_key_exists("salon_id", $detalle)) ? -1 : $detalle->salon_id;
         $detalle->comanda_id = (!array_key_exists("comanda_id", $detalle)) ? -1 : $detalle->comanda_id;
         $detalle->usuario_id = (!array_key_exists("usuario_id", $detalle)) ? -1 : $detalle->usuario_id;
         $detalle->cantidad = (!array_key_exists("cantidad", $detalle)) ? -1 : $detalle->cantidad;
-        $detalle->forma = (!array_key_exists("forma", $detalle)) ? 0 : $detalle->forma;
+        $detalle->forma_id = (!array_key_exists("forma_id", $detalle)) ? 0 : $detalle->forma_id;
         $detalle->status = (!array_key_exists("status", $detalle)) ? 0 : $detalle->status;
         $detalle->mesa = (!array_key_exists("mesa", $detalle)) ? 'Mesa' : $detalle->mesa;
 

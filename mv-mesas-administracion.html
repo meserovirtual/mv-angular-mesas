@@ -1,77 +1,49 @@
-<div class="container" ng-class="{'form-container':$ctrl.detailsOpen}">
-    <div ng-class="{'form-lista':$ctrl.detailsOpen}">
-        <div class="buscador-container">
-            <div class="input">
-                <input type="text" class="buscador" ng-model="$ctrl.filtro"
-                       placeholder="Buscar Sucursal" style="width: 100%">
+<div class="container container-bgk container-padding" ng-class="{'form-container':$ctrl.detailsOpen}">
+
+    <div class="form-container-2" ng-class="{'form-lista':$ctrl.detailsOpen}">
+
+        <div ng-repeat="mesa in $ctrl.mesas">
+            <div class="mesa-redonda flex-center-text" ng-if="mesa.forma_id == 1">
+                <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
+            </div>
+            <div class="mesa-cuadrada flex-center-text" ng-if="mesa.forma_id == 2">
+                <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
+            </div>
+            <div class="mesa-rectangular flex-center-text" ng-if="mesa.forma_id == 3">
+                <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
             </div>
         </div>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Sucursal</th>
-                <th>Dirección</th>
-                <th>Teléfono</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="row in $ctrl.sucursales | filter:$ctrl.filtro | limitTo:$ctrl.limit:$ctrl.start"
-                ng-click="row.sucursal_id=''+row.sucursal_id;$ctrl.sucursal=row;$ctrl.detailsOpen=true;">
-                <td class="">{{row.nombre}}</td>
-                <td class="">{{row.direccion}}</td>
-                <td class="">{{row.telefono}}</td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="4">
-                    <div class="table-td">
-                    <span>
-                        <button class="paginacion-primera" ng-click="$ctrl.first();"></button>
-                        <button class="paginacion-ant" ng-click="$ctrl.prev();"></button>
-                    </span>
-                    <span class="paginacion-paginas">
-                        <span>{{'PAGE' | xlat}} {{$ctrl.pagina}} {{'OF' | xlat}} {{$ctrl.paginas}}</span>
-                    </span>
-                    <span class="paginacion-go-to">{{'GO_TO' | xlat}}
-                        <input type="number" ng-model="$ctrl.pagina" ng-keyup="$ctrl.goToPagina();"
-                               class="input-paginacion">
-                    </span>
-                    <span>
-                        <button class="paginacion-sig" ng-click="$ctrl.next();"></button>
-                        <button class="paginacion-ultima"ng-click="$ctrl.last();"></button>
-                    </span>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+
         <div class="botonera">
-            <button type="button" class="boton-agregar" ng-click="$ctrl.sucursal={};$ctrl.detailsOpen=true;" title="Nuevo">
+            <button type="button" class="boton-agregar" ng-click="$ctrl.mesa={};$ctrl.detailsOpen=true;" title="Nuevo">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
         </div>
     </div>
 
-    <form class="form-abm" form-id="abm-detalle" ng-class="{'form-open':$ctrl.detailsOpen}">
+    <form class="form-abm" form-id="abm-mesa" ng-class="{'form-open':$ctrl.detailsOpen}">
         <div class="detalle-container" >
-            <h2>Nueva Sucursal</h2>
+            <h2>Nueva mesa</h2>
 
             <div class="mv-col">
-                <div class="input" data-tip="Sucursal">
-                    <input id="nombre" type="text" ng-model="$ctrl.sucursal.nombre" placeholder="Sucursal"
-                           autocomplete="off" maxlength="120" />
+                <div class="input">
+                    <label>Número</label>
+                    <input id="numero" type="text" ng-model="$ctrl.mesa.mesa"/>
                 </div>
-                <div class="input" data-tip="Teléfono - (xxx)xxx-xxxx / xxx-xxx-xxxx ">
-                    <input id="telefono" type="text" ng-model="$ctrl.sucursal.telefono" placeholder="Teléfono"
-                           autocomplete="off" maxlength="15" />
+                <div class="input">
+                    <label>Tamaño</label>
+                    <select ng-model="$ctrl.tamanioMesa"
+                            ng-options="tamanioMesa as tamanioMesa.cantidad for tamanioMesa in $ctrl.tamanioMesas">
+                    </select>
                 </div>
             </div>
             <div class="mv-col">
-                <div class="input" data-tip="Dirección">
-                    <input id="direccion" type="text" ng-model="$ctrl.sucursal.direccion" placeholder="Dirección"
-                           autocomplete="off" maxlength="150"/>
+                <div class="input">
+                    <label>Forma</label>
+                    <select ng-model="$ctrl.formaMesa"
+                            ng-options="formaMesa as formaMesa.forma for formaMesa in $ctrl.formasMesas">
+                    </select>
                 </div>
             </div>
 
