@@ -45,6 +45,17 @@ class Mesas extends Main
         echo json_encode($results);
     }
 
+    function exist($params)
+    {
+        $db = self::$instance->db;
+        $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
+
+        $SQL = 'Select mesa_id from mesas where mesa_id ="' . $mesa_decoded->mesa_id . '" AND salon_id = ' . $mesa_decoded->salon_id;
+
+        $result = $db->rawQuery($SQL);
+
+        echo json_encode($result);
+    }
 
     /**
      * @description Crea una mesa
@@ -53,24 +64,11 @@ class Mesas extends Main
     function create($params)
     {
         $db = self::$instance->db;
-        $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
-
-        $SQL = 'Select mesa_id from mesas where mesa_id ="' . $mesa_decoded->mesa_id . '"';
-
-        $result = $db->rawQuery($SQL);
-
-        if ($db->count > 0) {
-            header('HTTP/1.0 500 Internal Server Error');
-            echo 'Existe una sucursal con ese nombre';
-            return;
-        }
-
-        $db = self::$instance->db;
         $db->startTransaction();
         $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
 
         $data = array(
-            //'mesa_id' => $mesa_decoded->mesa_id,
+            'mesa_id' => $mesa_decoded->mesa_id,
             'salon_id' => $mesa_decoded->salon_id,
             'comanda_id' => $mesa_decoded->comanda_id,
             'usuario_id' => $mesa_decoded->usuario_id,
@@ -81,7 +79,8 @@ class Mesas extends Main
         );
 
         $result = $db->insert('mesas', $data);
-        if ($result > -1) {
+        //if ($result > -1) {
+        if ($result) {
             $db->commit();
             header('HTTP/1.0 200 Ok');
             echo json_encode($result);
@@ -100,24 +99,12 @@ class Mesas extends Main
     function update($params)
     {
         $db = self::$instance->db;
-        $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
-
-        $SQL = 'Select mesa_id from mesas where mesa_id ="' . $mesa_decoded->mesa_id . '"';
-
-        $result = $db->rawQuery($SQL);
-
-        if ($db->count > 0) {
-            header('HTTP/1.0 500 Internal Server Error');
-            echo 'Existe una mesa con ese nombre';
-            return;
-        }
-
-        $db = self::$instance->db;
         $db->startTransaction();
         $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
 
         $db->where('mesa_id', $mesa_decoded->mesa_id);
         $data = array(
+            'mesa_id' => $mesa_decoded->mesa_id,
             'salon_id' => $mesa_decoded->salon_id,
             'comanda_id' => $mesa_decoded->comanda_id,
             'usuario_id' => $mesa_decoded->usuario_id,
@@ -166,7 +153,7 @@ class Mesas extends Main
      */
     function checkMesa($detalle)
     {
-        //$detalle->mesa_id = (!array_key_exists("mesa_id", $detalle)) ? -1 : $detalle->mesa_id;
+        $detalle->mesa_id = (!array_key_exists("mesa_id", $detalle)) ? -1 : $detalle->mesa_id;
         $detalle->salon_id = (!array_key_exists("salon_id", $detalle)) ? -1 : $detalle->salon_id;
         $detalle->comanda_id = (!array_key_exists("comanda_id", $detalle)) ? -1 : $detalle->comanda_id;
         $detalle->usuario_id = (!array_key_exists("usuario_id", $detalle)) ? -1 : $detalle->usuario_id;

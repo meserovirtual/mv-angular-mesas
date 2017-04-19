@@ -1,25 +1,22 @@
 <div class="container container-bgk container-padding" ng-class="{'form-container':$ctrl.detailsOpen}">
 
-    <div class="form-container-2" ng-class="{'form-lista':$ctrl.detailsOpen}">
-
-        <div ng-repeat="mesa in $ctrl.mesas">
-            <div class="mesa-redonda flex-center-text" ng-if="mesa.forma_id == 1">
+    <div class="form-container-2 mesas-container" ng-class="{'form-lista':$ctrl.detailsOpen}">
+        <div class="" ng-repeat="mesa in $ctrl.mesas">
+            <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1">
                 <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
             </div>
-            <div class="mesa-cuadrada flex-center-text" ng-if="mesa.forma_id == 2">
+            <div class="mesa-cuadrada flex-center-text mesas-margin" ng-if="mesa.forma_id == 2">
                 <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
             </div>
-            <div class="mesa-rectangular flex-center-text" ng-if="mesa.forma_id == 3">
+            <div class="mesa-rectangular flex-center-text mesas-margin" ng-if="mesa.forma_id == 3">
                 <div class="mesa-numero" ng-click="$ctrl.mesaToUpdate(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
             </div>
         </div>
-
-
-        <div class="botonera">
-            <button type="button" class="boton-agregar" ng-click="$ctrl.mesa={};$ctrl.detailsOpen=true;" title="Nuevo">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-        </div>
+    </div>
+    <div class="botonera">
+        <button type="button" class="boton-agregar" ng-click="$ctrl.createMesa();" title="Nuevo">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
     </div>
 
     <form class="form-abm" form-id="abm-mesa" ng-class="{'form-open':$ctrl.detailsOpen}">

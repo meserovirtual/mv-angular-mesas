@@ -36,6 +36,7 @@
         vm.loadMesas = loadMesas;
         vm.remove = remove;
         vm.mesaToUpdate = mesaToUpdate;
+        vm.createMesa = createMesa;
 
         var element1 = angular.element(document.getElementById('numero'));
 
@@ -65,24 +66,39 @@
 
         function removeFocus() { }
 
-
         loadMesas();
 
         function loadMesas() {
-            MesasService.get().then(function (data) {
-                //console.log(data);
-                setData(data);
+            MesasService.get().then(function (mesas) {
+                setData(mesas);
             });
         }
 
         function mesaToUpdate(mesa) {
-            console.log(mesa);
-            console.log(vm.formaMesa);
-
             vm.mesa = mesa;
-            vm.tamanioMesa.cantidad = mesa.cantidad;
-            vm.formaMesa.forma_id = mesa.forma_id;
-            console.log(vm.formaMesa);
+            vm.tamanioMesa = getTamanioMesa(mesa.cantidad);
+            vm.formaMesa = getFormaMesa(mesa.forma_id);
+        }
+
+        function getTamanioMesa(cantidad) {
+            for(var i=0; i < vm.tamanioMesas.length; i++) {
+                if(vm.tamanioMesas[i].cantidad == cantidad)
+                    return vm.tamanioMesas[i];
+            }
+        }
+
+        function getFormaMesa(forma_id) {
+            for(var i=0; i < vm.formasMesas.length; i++) {
+                if(vm.formasMesas[i].forma_id == forma_id)
+                    return vm.formasMesas[i];
+            }
+        }
+
+        function createMesa() {
+            vm.mesa = {};
+            vm.formaMesa = vm.formasMesas[0];
+            vm.tamanioMesa = vm.tamanioMesas[0];
+            vm.detailsOpen = true;
         }
 
         function save() {
@@ -99,9 +115,7 @@
             vm.mesa.forma_id = vm.formaMesa.forma_id;
             vm.mesa.status = 0;
 
-            console.log(vm.mesa);
-
-            MesasService.create(vm.mesa).then(function (data) {
+            MesasService.save(vm.mesa).then(function (data) {
                 vm.detailsOpen = (data === undefined || data < 0) ? true : false;
                 if(data === undefined) {
                     element1[0].classList.add('error-input');
@@ -113,15 +127,16 @@
                     element1[0].classList.remove('error-input');
                     MvUtils.showMessage('success', 'La operación se realizó satisfactoriamente');
                 }
-            }).catch(function (data) {
+            }).catch(function (error) {
+                console.log(error);
                 vm.mesa = {};
                 vm.detailsOpen = true;
             });
 
         }
 
-        function setData(data) {
-            vm.mesas = data;
+        function setData(mesas) {
+            vm.mesas = mesas;
             vm.paginas = MesasVars.paginas;
         }
 

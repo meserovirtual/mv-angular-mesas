@@ -28,6 +28,7 @@
         service.update = update;
         service.remove = remove;
         service.save = save;
+        service.exist = exist;
 
         service.goToPagina = goToPagina;
         service.next = next;
@@ -90,17 +91,39 @@
         }
 
 
+        /*
         function save(mesa) {
-
             var deferred = $q.defer();
 
             if (mesa.mesa_id != undefined) {
+                console.log('update');
                 deferred.resolve(update(mesa));
             } else {
+                console.log('create');
                 deferred.resolve(create(mesa));
             }
             return deferred.promise;
         }
+        */
+
+        function save(mesa) {
+            var deferred = $q.defer();
+
+            exist(mesa).then(function(data){
+                //console.log(data);
+                if(data.length > 0) {
+                    //console.log('update');
+                    deferred.resolve(update(mesa));
+                } else {
+                    //console.log('create');
+                    deferred.resolve(create(mesa));
+                }
+            }).catch(function(error){
+               console.log(error);
+            });
+            return deferred.promise;
+        }
+
 
         /** @name: remove
          * @param sucursal_id
@@ -130,6 +153,22 @@
             return $http.post(url,
                 {
                     'function': 'create',
+                    'mesa': JSON.stringify(mesa)
+                })
+                .then(function (response) {
+                    MesasVars.clearCache = true;
+                    return response.data;
+                })
+                .catch(function (response) {
+                    MesasVars.clearCache = true;
+                    ErrorHandler(response);
+                });
+        }
+
+        function exist(mesa) {
+            return $http.post(url,
+                {
+                    'function': 'exist',
                     'mesa': JSON.stringify(mesa)
                 })
                 .then(function (response) {
