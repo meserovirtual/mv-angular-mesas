@@ -14,12 +14,12 @@
         }
     }
 
-    MvSalonController.$inject = ["MesasVars", 'MesasService', "MvUtils"];
+    MvSalonController.$inject = ["MesasVars", 'MesasService', "MvUtils", "StockService", "$scope"];
     /**
      * @param AcUsuarios
      * @constructor
      */
-    function MvSalonController(MesasVars, MesasService, MvUtils) {
+    function MvSalonController(MesasVars, MesasService, MvUtils, StockService, $scope) {
         var vm = this;
 
         vm.mesas = [];
@@ -34,9 +34,9 @@
         vm.cancel = cancel;
         vm.setData = setData;
         vm.loadMesas = loadMesas;
-        vm.remove = remove;
-        vm.mesaToUpdate = mesaToUpdate;
-        vm.createMesa = createMesa;
+        vm.openMesa = openMesa;
+        vm.showMesa = showMesa;
+
 
         
 
@@ -58,7 +58,29 @@
         vm.formaMesa = vm.formasMesas[0];
         vm.tamanioMesa = vm.tamanioMesas[0];
 
-        function removeFocus() { }
+        if(vm.mesa.status != undefined && vm.mesa.status < 3) {
+            window.document.getElementById('searchProducto').getElementsByTagName('input')[0].addEventListener('keyup', function (event) {
+                console.log('busco');
+                if (event.keyCode == 13) {
+                    var el = document.getElementById('cantidad');
+                    if (el != null) {
+                        el.focus();
+                    }
+                }
+            });
+        }
+
+
+
+        vm.searchProducto = searchProducto;
+
+        function searchProducto(callback) {
+            StockService.get().then(callback).then(function (data) {
+                console.log(data);
+            }).catch(function (data) {
+                console.log(data);
+            });
+        }
 
         loadMesas();
 
@@ -68,10 +90,9 @@
             });
         }
 
-        function mesaToUpdate(mesa) {
+        function showMesa(mesa) {
             vm.mesa = mesa;
-            vm.tamanioMesa = getTamanioMesa(mesa.cantidad);
-            vm.formaMesa = getFormaMesa(mesa.forma_id);
+            console.log(vm.mesa);
         }
 
         function getTamanioMesa(cantidad) {
@@ -88,11 +109,14 @@
             }
         }
 
-        function createMesa() {
-            vm.mesa = {};
-            vm.formaMesa = vm.formasMesas[0];
-            vm.tamanioMesa = vm.tamanioMesas[0];
-            vm.detailsOpen = true;
+        function openMesa(mesa) {
+            mesa.status = 0;
+            MesasService.save(mesa).then(function(data){
+                console.log(data);
+            }).catch(function (error) {
+                console.log(error);
+                MvUtils.showMessage('error', 'Ocurrio un error al abrir la mesa');
+            });
         }
 
         function save() {
@@ -130,26 +154,9 @@
         }
 
         function setData(mesas) {
+            console.log(mesas);
             vm.mesas = mesas;
             vm.paginas = MesasVars.paginas;
-        }
-
-        function remove() {
-            if(vm.mesa.mesa_id == undefined) {
-                alert('Debe seleccionar una mesa');
-            } else {
-                var result = confirm('�Esta seguro que desea eliminar la mesa seleccionada?');
-                if(result) {
-                    MesasService.remove(vm.mesa.mesa_id).then(function(data){
-                        vm.mesa = {};
-                        vm.detailsOpen = false;
-                        loadMesas();
-                        MvUtils.showMessage('success', 'La registro se borro satisfactoriamente');
-                    }).catch(function(data){
-                        console.log(data);
-                    });
-                }
-            }
         }
 
 
