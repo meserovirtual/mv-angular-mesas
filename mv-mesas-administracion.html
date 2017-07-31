@@ -42,6 +42,12 @@
                             ng-options="formaMesa as formaMesa.forma for formaMesa in $ctrl.formasMesas">
                     </select>
                 </div>
+                <div class="input">
+                    <label>Ubicación</label>
+                    <select ng-model="$ctrl.ubicacion"
+                            ng-options="ubicacion as ubicacion.nombre for ubicacion in $ctrl.ubicaciones">
+                    </select>
+                </div>
             </div>
 
             <div class="botonera">

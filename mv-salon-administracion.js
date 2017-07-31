@@ -29,16 +29,18 @@
         vm.tamanioMesas = [];
         vm.tamanioMesa = {};
         vm.detailsOpen = false;
+        vm.producto = {};
+        vm.productos = [];
+        vm.mesasDerecha = [];
+        vm.mesasIzquierda = [];
 
         vm.save = save;
         vm.cancel = cancel;
-        vm.setData = setData;
         vm.loadMesas = loadMesas;
         vm.openMesa = openMesa;
         vm.showMesa = showMesa;
 
 
-        
 
         vm.formasMesas = [
             {forma_id: 1, forma: 'Redonda'},
@@ -70,15 +72,13 @@
             });
         }
 
-
-
         vm.searchProducto = searchProducto;
 
         function searchProducto(callback) {
             StockService.get().then(callback).then(function (data) {
-                console.log(data);
-            }).catch(function (data) {
-                console.log(data);
+                //console.log(data);
+            }).catch(function (error) {
+                console.log(error);
             });
         }
 
@@ -86,13 +86,20 @@
 
         function loadMesas() {
             MesasService.get().then(function (mesas) {
-                setData(mesas);
+                for(var i=0; i <= mesas.length - 1; i++) {
+                    if(mesas[i].ubicacion == 1) {
+                        vm.mesasDerecha.push(mesas[i]);
+                    } else {
+                        vm.mesasIzquierda.push(mesas[i]);
+                    }
+                }
+            }).catch(function (error) {
+                console.log(error);
             });
         }
 
         function showMesa(mesa) {
             vm.mesa = mesa;
-            console.log(vm.mesa);
         }
 
         function getTamanioMesa(cantidad) {
@@ -120,45 +127,25 @@
         }
 
         function save() {
+            console.log(vm.producto);
+            console.log(vm.productos);
+            var encontrado = false;
 
-            if(vm.mesa.mesa === undefined || vm.mesa.mesa.length === 0) {
-                element1[0].classList.add('error-input');
-                MvUtils.showMessage('error', 'El n�mero no puede ser vacio');
-                return;
+            if(vm.productos.length == 0) {
+                vm.productos.push(vm.producto);
+            } else {
+                for(var i=0; i <= vm.productos.length -1; i++) {
+                    if(vm.productos[i].producto_id == vm.producto.producto_id) {
+                        vm.productos[i].cantidad = vm.productos[i].cantidad + vm.cantidad;
+                        encontrado = true;
+                    }
+                }
+            }
+            if(!encontrado) {
+                vm.productos.push(vm.producto);
             }
 
-            vm.mesa.mesa_id = vm.mesa.mesa;
-            vm.mesa.salon_id = 1;
-            vm.mesa.cantidad = vm.tamanioMesa.cantidad;
-            vm.mesa.forma_id = vm.formaMesa.forma_id;
-            vm.mesa.status = 0;
-
-            MesasService.save(vm.mesa).then(function (data) {
-                vm.detailsOpen = (data === undefined || data < 0) ? true : false;
-                if(data === undefined) {
-                    element1[0].classList.add('error-input');
-                    MvUtils.showMessage('error', 'Error actualizando el dato');
-                }
-                else {
-                    vm.mesa = {};
-                    loadMesas();
-                    element1[0].classList.remove('error-input');
-                    MvUtils.showMessage('success', 'La operaci�n se realiz� satisfactoriamente');
-                }
-            }).catch(function (error) {
-                console.log(error);
-                vm.mesa = {};
-                vm.detailsOpen = true;
-            });
-
         }
-
-        function setData(mesas) {
-            console.log(mesas);
-            vm.mesas = mesas;
-            vm.paginas = MesasVars.paginas;
-        }
-
 
         function cancel() {
             vm.mesas = [];

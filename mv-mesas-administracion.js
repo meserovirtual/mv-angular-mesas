@@ -29,6 +29,8 @@
         vm.tamanioMesas = [];
         vm.tamanioMesa = {};
         vm.detailsOpen = false;
+        vm.ubicacion = {};
+        vm.ubicaciones = [];
 
         vm.save = save;
         vm.cancel = cancel;
@@ -61,8 +63,14 @@
             {id: 6, cantidad: 12}
         ];
 
+        vm.ubicaciones = [
+            {id: 1, nombre: 'Derecha'},
+            {id: 2, nombre: 'Izquierda'},
+        ];
+
         vm.formaMesa = vm.formasMesas[0];
         vm.tamanioMesa = vm.tamanioMesas[0];
+        vm.ubicacion = vm.ubicaciones[0];
 
         function removeFocus() { }
 
@@ -78,6 +86,7 @@
             vm.mesa = mesa;
             vm.tamanioMesa = getTamanioMesa(mesa.cantidad);
             vm.formaMesa = getFormaMesa(mesa.forma_id);
+            vm.ubicacion = getUbicacion(mesa.ubicacion);
         }
 
         function getTamanioMesa(cantidad) {
@@ -94,10 +103,18 @@
             }
         }
 
+        function getUbicacion(ubicacion) {
+            for(var i=0; i < vm.ubicaciones.length; i++) {
+                if(vm.ubicaciones[i].id == ubicacion)
+                    return vm.ubicaciones[i];
+            }
+        }
+
         function createMesa() {
             vm.mesa = {};
             vm.formaMesa = vm.formasMesas[0];
             vm.tamanioMesa = vm.tamanioMesas[0];
+            vm.ubicacion = vm.ubicaciones[0];
             vm.detailsOpen = true;
         }
 
@@ -105,7 +122,7 @@
 
             if(vm.mesa.mesa === undefined || vm.mesa.mesa.length === 0) {
                 element1[0].classList.add('error-input');
-                MvUtils.showMessage('error', 'El número no puede ser vacio');
+                MvUtils.showMessage('error', 'El nÃºmero no puede ser vacio');
                 return;
             }
 
@@ -114,6 +131,7 @@
             vm.mesa.cantidad = vm.tamanioMesa.cantidad;
             vm.mesa.forma_id = vm.formaMesa.forma_id;
             vm.mesa.status = 0;
+            vm.mesa.ubicacion = vm.ubicacion.id;
 
             MesasService.save(vm.mesa).then(function (data) {
                 vm.detailsOpen = (data === undefined || data < 0) ? true : false;
@@ -125,7 +143,7 @@
                     vm.mesa = {};
                     loadMesas();
                     element1[0].classList.remove('error-input');
-                    MvUtils.showMessage('success', 'La operación se realizó satisfactoriamente');
+                    MvUtils.showMessage('success', 'La operaciÃ³n se realizÃ³ satisfactoriamente');
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -144,7 +162,7 @@
             if(vm.mesa.mesa_id == undefined) {
                 alert('Debe seleccionar una mesa');
             } else {
-                var result = confirm('¿Esta seguro que desea eliminar la mesa seleccionada?');
+                var result = confirm('Â¿Esta seguro que desea eliminar la mesa seleccionada?');
                 if(result) {
                     MesasService.remove(vm.mesa.mesa_id).then(function(data){
                         vm.mesa = {};
@@ -168,7 +186,7 @@
         }
 
 
-        // Implementación de la paginación
+        // ImplementaciÃ³n de la paginaciÃ³n
         vm.start = 0;
         vm.limit = MesasVars.paginacion;
         vm.pagina = MesasVars.pagina;

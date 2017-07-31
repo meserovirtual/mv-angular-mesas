@@ -40,7 +40,7 @@ class Mesas extends Main
     {
         $db = self::$instance->db;
 
-        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma_id, status, mesa FROM mesas ORDER BY mesa_id');
+        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma_id, status, mesa, ubicacion FROM mesas ORDER BY mesa_id');
 
         echo json_encode($results);
     }
@@ -75,7 +75,8 @@ class Mesas extends Main
             'cantidad' => $mesa_decoded->cantidad,
             'forma_id' => $mesa_decoded->forma_id,
             'status' => $mesa_decoded->status,
-            'mesa' => $mesa_decoded->mesa
+            'mesa' => $mesa_decoded->mesa,
+            'ubicacion' => $mesa_decoded->ubicacion
         );
 
         $result = $db->insert('mesas', $data);
@@ -111,7 +112,8 @@ class Mesas extends Main
             'cantidad' => $mesa_decoded->cantidad,
             'forma_id' => $mesa_decoded->forma_id,
             'status' => $mesa_decoded->status,
-            'mesa' => $mesa_decoded->mesa
+            'mesa' => $mesa_decoded->mesa,
+            'ubicacion' => $mesa_decoded->ubicacion
         );
 
         $result = $db->update('mesas', $data);
@@ -161,6 +163,7 @@ class Mesas extends Main
         $detalle->forma_id = (!array_key_exists("forma_id", $detalle)) ? 0 : $detalle->forma_id;
         $detalle->status = (!array_key_exists("status", $detalle)) ? 0 : $detalle->status;
         $detalle->mesa = (!array_key_exists("mesa", $detalle)) ? 'Mesa' : $detalle->mesa;
+        $detalle->ubicacion = (!array_key_exists("ubicacion", $detalle)) ? 1 : $detalle->ubicacion;
 
         return $detalle;
     }

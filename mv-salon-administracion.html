@@ -5,7 +5,7 @@
             <form id="salonForm" class="salon-form" form-id="mv-salon">
                 <div class="mv-col-5">
                     <div class="mesas-salon">
-                        <div class="" ng-repeat="mesa in $ctrl.mesas">
+                        <div class="" ng-repeat="mesa in $ctrl.mesasIzquierda">
                             <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="mv-col-5">
                     <div class="mesas-salon">
-                        <div class="" ng-repeat="mesa in $ctrl.mesas">
+                        <div class="" ng-repeat="mesa in $ctrl.mesasDerecha">
                             <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
@@ -80,25 +80,51 @@
 
                         <div class="input">
                             <label>Cantidad</label>
-                            <input type="number" step="0.01" ng-model="$ctrl.cantidad" placeholder="Cantidad" class="input-small"
+                            <input type="number" step="0.01" ng-model="$ctrl.cantidad" class="input-small"
                                    mv-validator is-required="Debe ingresar una cantidad" id="cantidad">
                         </div>
                     </div>
 
                     <div class="botonera">
-                        <button type="button" class="boton-ok" ng-click="$ctrl.save();" title="Guardar">
+                        <button type="button" class="boton-ok" ng-click="$ctrl.save();" title="Agregar Producto">
                             <i class="fa fa-check" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="boton-cancelar" ng-click="$ctrl.cancel();"
-                                title="Cancelar">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="boton-eliminar" ng-click="$ctrl.remove();"
-                                title="Borrar">
-                            <i class="fa fa-trash-o" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
+
+                <div class="margin-top">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in $ctrl.productos">
+                            <td class="">{{row.nombre}}</td>
+                            <td class="">{{row.cantidad}}</td>
+                            <td class="">{{row.precio_total}}</td>
+                            <td class="">
+                                <button type="button" class="boton-eliminar btn-small" ng-click="$ctrl.removeDetalle(row)"
+                                        title="Quitar">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="botonera">
+                    <button type="button" class="boton-cancelar" ng-click="$ctrl.cancel();"
+                            title="Cancelar">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+
             </div>
         </form>
 

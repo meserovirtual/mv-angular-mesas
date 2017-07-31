@@ -8,6 +8,7 @@ CREATE TABLE mesas (
   cantidad int(11) DEFAULT NULL,
   forma_id int(11) DEFAULT NULL,
   status int(1) DEFAULT 0 COMMENT '0- Pendiente, 1- Enviada, 2- Entregada',
-  mesa varchar(100) NOT NULL
+  mesa varchar(100) NOT NULL,
+  ubicacion int(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
