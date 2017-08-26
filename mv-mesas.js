@@ -58,14 +58,6 @@
 
             return $http.get(urlGet, {cache: true})
                 .then(function (response) {
-
-                    for (var x in response.data) {
-                        response.data[x].cajas = [];
-                        for (var i = 1; i <= response.data[x].pos_cantidad; i++) {
-                            response.data[x].cajas.push({caja_id: i, nombre: 'Caja ' + i})
-                        }
-                    }
-
                     $httpDefaultCache.put(urlGet, response.data);
                     MesasVars.clearCache = false;
                     MesasVars.paginas = (response.data.length % MesasVars.paginacion == 0) ? parseInt(response.data.length / MesasVars.paginacion) : parseInt(response.data.length / MesasVars.paginacion) + 1;
@@ -92,19 +84,19 @@
 
 
         /*
-        function save(mesa) {
-            var deferred = $q.defer();
+         function save(mesa) {
+         var deferred = $q.defer();
 
-            if (mesa.mesa_id != undefined) {
-                console.log('update');
-                deferred.resolve(update(mesa));
-            } else {
-                console.log('create');
-                deferred.resolve(create(mesa));
-            }
-            return deferred.promise;
-        }
-        */
+         if (mesa.mesa_id != undefined) {
+         console.log('update');
+         deferred.resolve(update(mesa));
+         } else {
+         console.log('create');
+         deferred.resolve(create(mesa));
+         }
+         return deferred.promise;
+         }
+         */
 
         function save(mesa) {
             var deferred = $q.defer();
@@ -119,7 +111,7 @@
                     deferred.resolve(create(mesa));
                 }
             }).catch(function(error){
-               console.log(error);
+                console.log(error);
             });
             return deferred.promise;
         }
@@ -301,17 +293,17 @@
      * @constructor
      */
     function MesasVars() {
-        // Cantidad de páginas total del recordset
+        // Cantidad de pï¿½ginas total del recordset
         this.paginas = 1;
-        // Página seleccionada
+        // Pï¿½gina seleccionada
         this.pagina = 1;
-        // Cantidad de registros por página
+        // Cantidad de registros por pï¿½gina
         this.paginacion = 10;
-        // Registro inicial, no es página, es el registro
+        // Registro inicial, no es pï¿½gina, es el registro
         this.start = 0;
 
 
-        // Indica si se debe limpiar el cache la próxima vez que se solicite un get
+        // Indica si se debe limpiar el cache la prï¿½xima vez que se solicite un get
         this.clearCache = true;
 
     }
