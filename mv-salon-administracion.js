@@ -90,7 +90,7 @@
 
         function searchProducto(callback) {
             StockService.get().then(callback).then(function (data) {
-                console.log(data);
+                //console.log(data);
             }).catch(function (data) {
                 console.log(data);
             });
@@ -124,7 +124,6 @@
 
         function showMesa(mesa) {
             vm.mesa = mesa;
-            console.log(mesa);
             vm.titulo = "ABRIR MESA" + " - " + mesa.mesa;
 
             if(mesa.status > 0) {
@@ -133,7 +132,7 @@
                 vm.detalles = [];
 
                 ComandasService.getComandaByMesa(mesa.mesa_id).then(function(comandas){
-                    console.log(comandas[0]);
+                    //console.log(comandas[0]);
                     vm.total = comandas[0].total;
                     //console.log(comandas[0].detalles);
 
@@ -169,7 +168,7 @@
                         }
                     });
 
-                    console.log(vm.detalles);
+                    //console.log(vm.detalles);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -212,7 +211,7 @@
         }
 
         function save() {
-            console.log(vm.producto);
+            //console.log(vm.producto);
 
             if (vm.producto.producto_tipo == 3) {
                 vm.cantidad = 1;
@@ -282,7 +281,7 @@
                 vm.detalles.push(vm.detalle);
             }
 
-            console.log(vm.detalles);
+            //console.log(vm.detalles);
 
             vm.producto = {};
             vm.observaciones = '';
@@ -357,16 +356,16 @@
 
         function createComanda() {
             var comanda = {
-                origen_id: -1, //El origen del cobro es Mostrador
+                origen_id: vm.mesa.mesa_id,
                 total: vm.total,
-                status: 0,
+                status: 1,
                 mesa_id: vm.mesa.mesa_id,
                 usuario_id: vm.mozo.usuario_id,
                 detalles: []
             };
             comanda.detalles = createComandaDetalle();
 
-            console.log(comanda);
+            //console.log(comanda);
             return comanda;
         }
 
@@ -377,7 +376,7 @@
             for (var i = 0; i <= vm.detalles.length - 1; i++) {
                 var detalle = {};
                 detalle.producto_id = vm.detalles[i].producto_id;
-                detalle.status = 0;
+                detalle.status = 1;
                 detalle.comentarios = vm.detalles[i].observaciones;
                 detalle.cantidad = vm.detalles[i].cantidad;
                 detalle.precio = vm.detalles[i].precio_total;
@@ -396,7 +395,7 @@
 
                 detalles.push(detalle);
             }
-            console.log(detalles);
+            //console.log(detalles);
 
             return detalles;
         }
@@ -404,7 +403,15 @@
         function saveComanda() {
             ComandasService.save(createComanda()).then(function (data) {
                 console.log(data);
-                cleanVariables();
+                //vm.mesa.comanda_id = data;
+                vm.mesa.comanda_id = data.substr(1);
+                vm.mesa.usuario_id = -2;
+                MesasService.save(vm.mesa).then(function(data){
+                    console.log(data);
+                    cleanVariables();
+                }).catch(function (data) {
+                    console.log(data);
+                });
             }).catch(function (data) {
                 console.log(data);
             });
@@ -414,6 +421,8 @@
             vm.detalles = [];
             vm.detalle = {};
             vm.producto = {};
+            vm.total = 0.00;
+            vm.titulo = "";
         }
 
         function cancel() {
