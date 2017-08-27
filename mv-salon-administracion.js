@@ -125,6 +125,7 @@
         function showMesa(mesa) {
             vm.mesa = mesa;
             console.log(mesa);
+            vm.titulo = "ABRIR MESA" + " - " + mesa.mesa;
 
             if(mesa.status > 0) {
                 vm.total = 0.00;
@@ -190,12 +191,23 @@
         }
 
         function openMesa(mesa) {
-            mesa.status = 0; //Le pongo el estado pendiente a la mesa.
+            mesa.status = 1; //Le pongo el estado abierta a la mesa.
             MesasService.save(mesa).then(function(data){
                 console.log(data);
             }).catch(function (error) {
                 console.log(error);
                 MvUtils.showMessage('error', 'Ocurrio un error al abrir la mesa');
+            });
+        }
+
+        // Funciones para Autocomplete
+        vm.searchCliente = searchCliente;
+
+        function searchCliente(callback) {
+            UserService.get(3).then(callback).then(function (data) {
+                console.log(data);
+            }).catch(function (data) {
+                console.log(data);
             });
         }
 

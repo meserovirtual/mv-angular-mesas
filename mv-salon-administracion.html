@@ -6,13 +6,16 @@
                 <div class="mv-col-5">
                     <div class="mesas-salon">
                         <div class="" ng-repeat="mesa in $ctrl.mesasIzquierda">
-                            <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1">
+                            <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
-                            <div class="mesa-cuadrada flex-center-text mesas-margin" ng-if="mesa.forma_id == 2">
+                            <div class="mesa-cuadrada flex-center-text mesas-margin" ng-if="mesa.forma_id == 2"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
-                            <div class="mesa-rectangular flex-center-text mesas-margin" ng-if="mesa.forma_id == 3">
+                            <div class="mesa-rectangular flex-center-text mesas-margin" ng-if="mesa.forma_id == 3"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
                         </div>
@@ -26,13 +29,16 @@
                 <div class="mv-col-5">
                     <div class="mesas-salon">
                         <div class="" ng-repeat="mesa in $ctrl.mesasDerecha">
-                            <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1">
+                            <div class="mesa-redonda flex-center-text mesas-margin" ng-if="mesa.forma_id == 1"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
-                            <div class="mesa-cuadrada flex-center-text mesas-margin" ng-if="mesa.forma_id == 2">
+                            <div class="mesa-cuadrada flex-center-text mesas-margin" ng-if="mesa.forma_id == 2"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
-                            <div class="mesa-rectangular flex-center-text mesas-margin" ng-if="mesa.forma_id == 3">
+                            <div class="mesa-rectangular flex-center-text mesas-margin" ng-if="mesa.forma_id == 3"
+                                 ng-class="{'mesa-cerrada':mesa.status == 0, 'mesa-abierta':mesa.status == 1}">
                                 <div class="mesa-numero" ng-click="$ctrl.showMesa(mesa);$ctrl.detailsOpen=true;">{{mesa.mesa}}</div>
                             </div>
                         </div>
@@ -64,8 +70,12 @@
                     </div>
                     <div class="mv-col">
                         <div class="input">
-                            <label>Cliente:</label><span>(opcional)</span>
-                            <input id="mesa" type="text" ng-model="$ctrl.mesa.mesa"/>
+                            <label for="searchClienteMain">Cliente:</label><span>(opcional)</span>
+                            <mv-autocomplete fields-to-show="'nombre,apellido'"
+                                             selected-to="$ctrl.cliente"
+                                             search-fields="'nombre,apellido,mail'"
+                                             search-function="$ctrl.searchCliente(callback)"
+                                             id="searchClienteMain"></mv-autocomplete>
                         </div>
                     </div>
 
@@ -83,22 +93,33 @@
                             <input id="mesa" type="text" ng-model="$ctrl.mesa.mesa" class="readonly" readonly/>
                         </div>
                         <div class="input">
-                            <label>Total</label>
-                            <input id="total" type="text" ng-model="$ctrl.total" class="readonly" readonly/>
-                        </div>
-                    </div>
-                    <div class="mv-col">
-                        <div class="input">
-                            <label>Cantidad de Personas</label>
-                            <input id="personas" type="number" ng-model="$ctrl.mesa.cantidad" />
-                        </div>
-                        <div class="input">
-                            <label>Moso</label>
+                            <label>Mozo</label>
                             <select ng-model="$ctrl.mozo"
                                     ng-options="mozo as mozo.nombre for mozo in $ctrl.mozos">
                             </select>
                         </div>
                     </div>
+                    <!--<div class="mv-col">
+                        <div class="input">
+                            <label>Cantidad de Personas</label>
+                            <input id="personas" type="number" ng-model="$ctrl.mesa.cantidad" />
+                        </div>
+                        <div class="input">
+                            <label>Total</label>
+                            <input id="total" type="text" ng-model="$ctrl.total" class="readonly" readonly/>
+                        </div>
+                    </div>-->
+                    <div class="mv-col">
+                        <div class="input">
+                            <label>Cliente</label>
+                            <input id="cliente" type="text" ng-model="$ctrl.cliente" />
+                        </div>
+                        <div class="input">
+                            <label>Código Reserva</label>
+                            <input id="codigo" type="text" ng-model="$ctrl.codigo_reserva" />
+                        </div>
+                    </div>
+                    <h2 style="margin-top: 15px;">Agregar productos a la mesa</h2>
                     <div class="mv-col">
                         <div class="input">
                             <label>Producto</label>
@@ -150,6 +171,8 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <h2 style="margin-top: 15px">TOTAL: {{$ctrl.total | currency}}</h2>
 
                     <div class="botonera">
                         <button type="button" class="boton-ok" ng-click="$ctrl.saveComanda();" title="Crear Comanda">
