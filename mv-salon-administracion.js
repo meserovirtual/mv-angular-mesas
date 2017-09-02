@@ -42,6 +42,7 @@
         vm.titulo = "ABRIR MESA";
         vm.titulo2 = "¿Deseas abrir la mesa?";
         vm.codigo_reserva = "";
+        vm.comanda = {};
 
         vm.save = save;
         vm.cancel = cancel;
@@ -132,43 +133,52 @@
                 vm.detalles = [];
 
                 ComandasService.getComandaByMesa(mesa.mesa_id).then(function(comandas){
-                    //console.log(comandas[0]);
-                    vm.total = comandas[0].total;
-                    //console.log(comandas[0].detalles);
+                    console.log(comandas[0]);
+                    if(comandas[0] != undefined) {
+                        vm.comanda = comandas[0];
 
-                    for(var i=0; i <= vm.mozos.length - 1; i++) {
-                        if(vm.mozos[i].usuario_id = comandas[0].usuario_id) {
-                            vm.mozo = vm.mozos[i];
+                        vm.total = comandas[0].total;
+                        //console.log(comandas[0].detalles);
+
+                        for(var i=0; i <= vm.mozos.length - 1; i++) {
+                            if(vm.mozos[i].usuario_id = comandas[0].usuario_id) {
+                                vm.mozo = vm.mozos[i];
+                            }
                         }
+
+                        var list = Object.getOwnPropertyNames(comandas[0].detalles);
+                        list.forEach(function (item, index, array) {
+                            if (typeof comandas[0].detalles[item] === 'object') {
+
+                                var prod = angular.copy(comandas[0].detalles[item]);
+
+                                vm.detalle = {
+                                    producto_id: prod.producto_id,
+                                    sku: '',
+                                    producto_nombre: prod.nombre,
+                                    cantidad: prod.cantidad,
+                                    precio_unidad: prod.precio / prod.cantidad,
+                                    precio_total: prod.precio,
+                                    stock: [],
+                                    productos_kit: [],
+                                    productos_tipo: 0,
+                                    mp: false,
+                                    iva: 0,
+                                    observaciones: prod.comentarios,
+                                    status: 1
+                                };
+
+                                vm.detalles.push(vm.detalle);
+                            }
+                        });
+                        console.log(vm.detalles);
+                        vm.comanda.detalles = [];
+                        vm.comanda.detalles = vm.detalles;
+                        console.log(vm.comanda);
+                    } else {
+                        vm.comanda = undefined;
                     }
 
-                    var list = Object.getOwnPropertyNames(comandas[0].detalles);
-                    list.forEach(function (item, index, array) {
-                        if (typeof comandas[0].detalles[item] === 'object') {
-
-                            var prod = angular.copy(comandas[0].detalles[item]);
-
-                            vm.detalle = {
-                                producto_id: prod.producto_id,
-                                sku: '',
-                                producto_nombre: prod.nombre,
-                                cantidad: prod.cantidad,
-                                precio_unidad: prod.precio / prod.cantidad,
-                                precio_total: prod.precio,
-                                stock: [],
-                                productos_kit: [],
-                                productos_tipo: 0,
-                                mp: false,
-                                iva: 0,
-                                observaciones: prod.comentarios,
-                                status: 1
-                            };
-
-                            vm.detalles.push(vm.detalle);
-                        }
-                    });
-
-                    //console.log(vm.detalles);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -363,6 +373,9 @@
                 usuario_id: vm.mozo.usuario_id,
                 detalles: []
             };
+            if(vm.comanda != undefined) {
+                comanda.comanda_id = vm.comanda.comanda_id;
+            }
             comanda.detalles = createComandaDetalle();
 
             //console.log(comanda);
