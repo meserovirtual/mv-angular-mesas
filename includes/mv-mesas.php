@@ -40,7 +40,7 @@ class Mesas extends Main
     {
         $db = self::$instance->db;
 
-        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma_id, status, mesa, ubicacion FROM mesas ORDER BY mesa_id');
+        $results = $db->rawQuery('SELECT mesa_id, salon_id, comanda_id, usuario_id, cantidad, forma_id, status, mesa, ubicacion FROM mesas WHERE empresa_id = ' . getEmpresa() . ' ORDER BY mesa_id');
 
         echo json_encode($results);
     }
@@ -50,7 +50,7 @@ class Mesas extends Main
         $db = self::$instance->db;
         $mesa_decoded = self::checkMesa(json_decode($params["mesa"]));
 
-        $SQL = 'Select mesa_id from mesas where mesa_id ="' . $mesa_decoded->mesa_id . '" AND salon_id = ' . $mesa_decoded->salon_id;
+        $SQL = 'Select mesa_id from mesas where p.empresa_id = ' . getEmpresa() . ' and mesa_id ="' . $mesa_decoded->mesa_id . '" AND salon_id = ' . $mesa_decoded->salon_id;
 
         $result = $db->rawQuery($SQL);
 
@@ -76,7 +76,8 @@ class Mesas extends Main
             'forma_id' => $mesa_decoded->forma_id,
             'status' => $mesa_decoded->status,
             'mesa' => $mesa_decoded->mesa,
-            'ubicacion' => $mesa_decoded->ubicacion
+            'ubicacion' => $mesa_decoded->ubicacion,
+            'empresa_id' => getEmpresa()
         );
 
         $result = $db->insert('mesas', $data);
